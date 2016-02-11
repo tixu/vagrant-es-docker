@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+   es:
+     build: elasticsearch
+     command: elasticsearch --discovery.zen.ping.unicast.hosts=es
+     ports:
+       - 9200:9200
+     networks:
+      - sic_ntw
+   esslave:
+       build: slave
+       command: elasticsearch --discovery.zen.ping.unicast.hosts=es
+       networks:
+        - sic_ntw
+   kibana:
+        image: kibana
+        ports:
+          - 5601:5601
+        networks:
+          - sic_ntw
+        links:
+          - es:elasticsearch
+        environment:
+          - ELASTICSEARCH_URL=http://es:9200
+   logstash:
+        image: logstash:latest
+        command: logstash -f /etc/logstash/conf.d/logstash.conf
+        volumes:
+          - ./logstash/config:/etc/logstash/conf.d
+        ports:
+          - "5000:5000"
+        links:
+          - es:elasticsearch
+        networks:
+          - sic_ntw
+
+networks:
+    sic_ntw:
+      driver: bridge
+      driver_opts:
+        com.docker.network.bridge.enable_icc: "true"

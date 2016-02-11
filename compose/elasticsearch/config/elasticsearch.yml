@@ -1,0 +1,22 @@
+network.host: 0.0.0.0
+
+cluster.name: my-gettingstarted-cluster
+
+# Set this property to N-1 where N is the number of nodes in your cluster.
+index.number_of_replicas: 2
+
+# ensure the recovery process will start after at least 2 nodes in the cluster have been started.
+gateway.recover_after_nodes: 2
+
+# Should be set to something like N/2 + 1 where N is the number of nodes in your cluster. This is to avoid the “split-brain” scenario.
+discovery.zen.mininum_master_nodes: 2
+
+# Disabling multicast
+# Multicast is not recommended in production, disabling it will allow more control over your cluster:
+discovery.zen.ping.multicast.enabled: false
+
+# Of course, you’ll need to specify the 2 others hosts for each node in your cluster:
+#    host-1 will communicate with host-2 & host-3
+#    host-2 will communicate with host-1 & host-3
+#    host-3 will communicate with host-1 & host-2
+discovery.zen.ping.unicast.hosts: [“gettingstarted-1”, “gettingstarted-2”]
